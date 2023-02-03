@@ -4,12 +4,10 @@ import com.singfung.demo.model.dto.UserDTO;
 import com.singfung.demo.model.entity.User;
 import com.singfung.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * @author sing-fung
@@ -27,13 +25,17 @@ public class UserController {
     }
 
     @PostMapping
-    public User register(@RequestBody UserDTO dto) {
-        User user = new User(dto);
+    public User addUser(@RequestBody @Validated(UserDTO.Insert.class) UserDTO dto) {
+        return userService.addUser(dto);
+    }
 
-        user.setCreateTime(new Date());
-        user.setTs(new Date());
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.listAllUsers();
+    }
 
-        user = userService.addUser(user);
-        return user;
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Integer id) {
+        return userService.getUserById(id);
     }
 }

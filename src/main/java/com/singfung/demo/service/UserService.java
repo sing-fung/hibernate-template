@@ -1,9 +1,16 @@
 package com.singfung.demo.service;
 
+import com.singfung.demo.model.dto.UserDTO;
 import com.singfung.demo.model.entity.User;
 import com.singfung.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author sing-fung
@@ -19,8 +26,35 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User addUser(User user) {
+    public User addUser(UserDTO dto) {
+        if(userRepository.findByUsername(dto.getUsername()) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "username has been registered");
+        }
+
+        if(userRepository.findByEmail(dto.getEmail()) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "email has been registered");
+        }
+
+        User user = new User(dto);
+
+        user.setCreateTime(new Date());
+        user.setTs(new Date());
+
         user = userRepository.save(user);
         return user;
+    }
+
+    public List<User> listAllUsers() {
+        return userRepository.findByOrderByIdDesc();
+    }
+
+    public User getUserById(Integer id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if(!userOptional.isPresent()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        return userOptional.get();
     }
 }
