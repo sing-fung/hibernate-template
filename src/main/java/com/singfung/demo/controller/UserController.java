@@ -2,6 +2,7 @@ package com.singfung.demo.controller;
 
 import com.singfung.demo.model.dto.UserDTO;
 import com.singfung.demo.model.entity.User;
+import com.singfung.demo.model.enumeration.UserStatus;
 import com.singfung.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -42,5 +43,10 @@ public class UserController {
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Integer id, @RequestBody @Validated(UserDTO.Update.class) UserDTO dto) {
         return userService.updateUser(id, dto);
+    }
+
+    @PutMapping("/{id}/status/{status}")
+    public User updateUserStatus(@PathVariable Integer id, @PathVariable UserStatus status) {
+        return userService.updateUserStatus(id, status);
     }
 }

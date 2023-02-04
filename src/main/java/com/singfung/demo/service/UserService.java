@@ -2,6 +2,7 @@ package com.singfung.demo.service;
 
 import com.singfung.demo.model.dto.UserDTO;
 import com.singfung.demo.model.entity.User;
+import com.singfung.demo.model.enumeration.UserStatus;
 import com.singfung.demo.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class UserService {
 
         User user = new User(dto);
 
+        user.setStatus(UserStatus.enabled);
         user.setCreateTime(new Date());
         user.setTs(new Date());
 
@@ -74,5 +76,17 @@ public class UserService {
         user.setTs(new Date());
 
         return userRepository.save(user);
+    }
+
+    public User updateUserStatus(Integer id, UserStatus status) {
+        User user = getUserById(id);
+
+        if(!user.getStatus().equals(status)) {
+            user.setStatus(status);
+            user.setTs(new Date());
+            userRepository.save(user);
+        }
+
+        return user;
     }
 }
