@@ -3,6 +3,7 @@ package com.singfung.demo.service;
 import com.singfung.demo.model.dto.UserDTO;
 import com.singfung.demo.model.entity.User;
 import com.singfung.demo.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -56,5 +57,22 @@ public class UserService {
         }
 
         return userOptional.get();
+    }
+
+    public User updateUser(Integer id, UserDTO dto) {
+        if(dto.getUsername() != null && userRepository.findByUsernameAndIdNot(dto.getUsername(), id) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "username has been registered");
+        }
+
+        if(dto.getEmail() != null && userRepository.findByEmailAndIdNot(dto.getEmail(), id) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "email has been registered");
+        }
+
+        User user = getUserById(id);
+        dto.setPassword(user.getPassword());
+        BeanUtils.copyProperties(dto, user);
+        user.setTs(new Date());
+
+        return userRepository.save(user);
     }
 }

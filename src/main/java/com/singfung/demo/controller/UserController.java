@@ -38,4 +38,9 @@ public class UserController {
     public User getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
     }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Integer id, @RequestBody @Validated(UserDTO.Update.class) UserDTO dto) {
+        return userService.updateUser(id, dto);
+    }
 }

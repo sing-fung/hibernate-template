@@ -13,13 +13,14 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class UserDTO
 {
-    @NotBlank(message = "username cannot be empty", groups = {Insert.class})
+    @NotBlank(message = "username cannot be empty", groups = {Insert.class, Update.class})
     String username;
 
     @NotBlank(message = "password cannot be empty", groups = {Insert.class})
     String password;
 
-    @Email(message = "email cannot be empty", groups = {Insert.class})
+    @Email(message = "invalid email format", groups = {Insert.class, Update.class})
+    @NotBlank(message = "email cannot be empty", groups = {Insert.class, Update.class})
     String email;
 
     public interface Update {}

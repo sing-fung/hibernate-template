@@ -20,4 +20,8 @@ public interface UserRepository extends JpaRepository<User, Serializable>
     User findByEmail(String email);
 
     List<User> findByOrderByIdDesc();
+
+    User findByUsernameAndIdNot(String username, Integer id);
+
+    User findByEmailAndIdNot(String email, Integer id);
 }
